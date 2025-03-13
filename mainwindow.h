@@ -2,6 +2,9 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QtWidgets/qpushbutton.h>
+#include <iostream>
+using namespace std;
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -16,6 +19,13 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+
+private slots:
+    void handleClick(QPushButton * tile) {
+        QString tilePosition = QString(tile->objectName().at(4)) + QString(tile->objectName().at(5));
+        cout << "Position: " << tilePosition.toStdString() << endl;
+        cout << "Value: " << tile->text().toStdString() << endl;
+    };
 
 private:
     Ui::MainWindow *ui;
