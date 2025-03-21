@@ -10,11 +10,13 @@ CONFIG += c++17
 
 SOURCES += \
     boardmodel.cpp \
+    boardview.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
     boardmodel.h \
+    boardview.h \
     mainwindow.h
 
 FORMS += \

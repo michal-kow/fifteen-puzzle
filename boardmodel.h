@@ -4,20 +4,20 @@
 #include <QVector>
 #include <QPoint>
 
-class BoardModel
-{
+class BoardModel {
 private:
-    QVector<QVector<int>> board;
-    QPoint emptyTile;
-    int boardSize;
+    int boardSize; //size of the NxN board
+    QVector<QVector<int>> board; //all tiles values stored in a 2D array
+    QPoint emptyTile; //empty tile's position stored in the {x,y} format
 
 public:
     BoardModel();
 
-    BoardModel(QVector<QVector<int>> _board, QPoint _emptyTile, int _boardSize);
+    BoardModel(int _boardSize);
 
+    QVector<QVector<int>> generateSolvedBoard(int boardSize);
     void shuffle();
-    bool isEmptyTileNeighbor(int tile);
+    bool isEmptyTileAdjacent(int tile);
     void moveTile(int tile);
     QPoint getTilesPosition(int tile);
     bool isSolved();

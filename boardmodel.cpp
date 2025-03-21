@@ -6,18 +6,43 @@
 using namespace std;
 
 BoardModel::BoardModel() {
-    board = {{0, 1}, {2, 3}};
-    QPoint emptyTile = {0, 0};
-    boardSize = 2;
+    // Create the default 15 Puzzle board (board size is 4) and shuffle it
+    board = generateSolvedBoard(4);
+    emptyTile = {3, 3};
+    boardSize = 4;
+
+    shuffle();
 }
 
-BoardModel::BoardModel(QVector<QVector<int>> _board, QPoint _emptyTile, int _boardSize) {
-    board = _board;
-    emptyTile = _emptyTile;
+BoardModel::BoardModel(int _boardSize) {
+    // Set properties based on the board size and shuffle the board
     boardSize = _boardSize;
+    board = generateSolvedBoard(boardSize);
+    emptyTile = {boardSize - 1, boardSize - 1};
+
+    shuffle();
+}
+
+QVector<QVector<int>> BoardModel::generateSolvedBoard(int boardSize) {
+    // Generate a solved N-size board (solved being the numbers going from 1 to N^2-1 with the 0 as the empty tile in the last spot)
+    QVector<QVector<int>> solvedBoard(boardSize, QVector<int>(boardSize, 0));
+
+    int value = 1; //start assigning the values from 1
+    for (int row = 0; row < boardSize; row++) {
+        for (int col = 0; col < boardSize; col++) {
+            if (row == boardSize - 1 && col == boardSize - 1) {
+                solvedBoard[row][col] = 0; //assign 0 if it's the last spot
+            } else {
+                solvedBoard[row][col] = value++;
+            }
+        }
+    }
+
+    return solvedBoard;
 }
 
 void BoardModel::shuffle() {
+    // Shuffle the board's values
     for (int i = 0; i < 1000; i++) {
         int rand = QRandomGenerator::global()->bounded(4);
         int x = emptyTile.x();
@@ -50,7 +75,8 @@ void BoardModel::shuffle() {
     }
 }
 
-bool BoardModel::isEmptyTileNeighbor(int tile) {
+bool BoardModel::isEmptyTileAdjacent(int tile) {
+    // Check if a tile with the given value is adjacent to the empty tile
     QPoint tilesPosition = getTilesPosition(tile);
 
     if (
@@ -66,6 +92,7 @@ bool BoardModel::isEmptyTileNeighbor(int tile) {
 }
 
 QPoint BoardModel::getTilesPosition(int tile) {
+    // Get position of a tile with the given value
     for (int row = 0; row < board.size(); row++) {
         for (int col = 0; col < board[row].size(); col++) {
             if (board[row][col] == tile) {
@@ -78,7 +105,8 @@ QPoint BoardModel::getTilesPosition(int tile) {
 }
 
 void BoardModel::moveTile(int tile) {
-    if (isEmptyTileNeighbor(tile)) {
+    // Swap the given tile with the empty spot
+    if (isEmptyTileAdjacent(tile)) {
         QPoint tilesPosition = getTilesPosition(tile);
         swap(board[tilesPosition.x()][tilesPosition.y()], board[emptyTile.x()][emptyTile.y()]);
         emptyTile = {tilesPosition.x(), tilesPosition.y()};
@@ -86,6 +114,7 @@ void BoardModel::moveTile(int tile) {
 };
 
 bool BoardModel::isSolved() {
+    // Check if the puzzle is solved
     int expectedValue = 1;
 
     for (int row = 0; row < boardSize; row++) {
