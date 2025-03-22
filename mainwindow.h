@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 #include <QtWidgets/qpushbutton.h>
+#include <QStackedWidget>
+#include <landingpage.h>
 #include <boardmodel.h>
 #include <boardview.h>
 
@@ -23,7 +25,13 @@ public:
 
 private:
     Ui::MainWindow *ui;
+    QStackedWidget *stackedWidget;
+    LandingPage *landingPage;
     BoardModel *boardModel;
     BoardView *boardView;
+
+public slots:
+    void startGame(int boardSize);
+    void returnToLandingPage();
 };
 #endif // MAINWINDOW_H

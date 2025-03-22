@@ -18,8 +18,8 @@ public:
     QVector<QVector<int>> generateSolvedBoard(int boardSize);
     void shuffle();
     bool isEmptyTileAdjacent(int tile);
-    void moveTile(int tile);
-    QPoint getTilesPosition(int tile);
+    bool moveTile(int tile);
+    QPoint getTilePosition(int tile);
     bool isSolved();
     int getBoardSize();
     QVector<QVector<int>> getBoard();

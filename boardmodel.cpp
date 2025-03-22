@@ -77,7 +77,7 @@ void BoardModel::shuffle() {
 
 bool BoardModel::isEmptyTileAdjacent(int tile) {
     // Check if a tile with the given value is adjacent to the empty tile
-    QPoint tilesPosition = getTilesPosition(tile);
+    QPoint tilesPosition = getTilePosition(tile);
 
     if (
         (emptyTile.x() - 1 == tilesPosition.x() && emptyTile.y() == tilesPosition.y()) ||
@@ -91,7 +91,7 @@ bool BoardModel::isEmptyTileAdjacent(int tile) {
     return false;
 }
 
-QPoint BoardModel::getTilesPosition(int tile) {
+QPoint BoardModel::getTilePosition(int tile) {
     // Get position of a tile with the given value
     for (int row = 0; row < board.size(); row++) {
         for (int col = 0; col < board[row].size(); col++) {
@@ -104,13 +104,16 @@ QPoint BoardModel::getTilesPosition(int tile) {
     return {-1, -1};
 }
 
-void BoardModel::moveTile(int tile) {
-    // Swap the given tile with the empty spot
+bool BoardModel::moveTile(int tile) {
+    // Swap the given tile with the empty spot; return true if possile or false if not
     if (isEmptyTileAdjacent(tile)) {
-        QPoint tilesPosition = getTilesPosition(tile);
+        QPoint tilesPosition = getTilePosition(tile);
         swap(board[tilesPosition.x()][tilesPosition.y()], board[emptyTile.x()][emptyTile.y()]);
         emptyTile = {tilesPosition.x(), tilesPosition.y()};
+        return true;
     }
+
+    return false;
 };
 
 bool BoardModel::isSolved() {

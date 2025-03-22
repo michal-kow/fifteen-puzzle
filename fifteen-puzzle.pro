@@ -11,13 +11,17 @@ CONFIG += c++17
 SOURCES += \
     boardmodel.cpp \
     boardview.cpp \
+    landingpage.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    statshandler.cpp
 
 HEADERS += \
     boardmodel.h \
     boardview.h \
-    mainwindow.h
+    landingpage.h \
+    mainwindow.h \
+    statshandler.h
 
 FORMS += \
     mainwindow.ui

@@ -3,6 +3,7 @@
 
 #include <QMessageBox>
 #include <QApplication>
+#include <iostream>
 
 using namespace std;
 
@@ -11,6 +12,17 @@ BoardView::BoardView(BoardModel *model, QWidget *parent) : QWidget(parent), boar
     gridLayout = new QGridLayout(this);
     gridLayout->setSpacing(0);
     setLayout(gridLayout);
+
+    statsHandler = new StatsHandler(this);
+    connect(statsHandler, &StatsHandler::movesUpdated, this, &BoardView::updateMovesDisplay);
+    connect(statsHandler, &StatsHandler::timeUpdated, this, &BoardView::updateTimeDisplay);
+    statsHandler->startTimer();
+
+    statsLabel = new QLabel("Moves: 0");
+    timerLabel = new QLabel("Time: 0 s");
+
+    gridLayout->addWidget(statsLabel, boardModel->getBoardSize(), 0, 1, boardModel->getBoardSize());
+    gridLayout->addWidget(timerLabel, boardModel->getBoardSize() + 1, 0, 1, boardModel->getBoardSize());
 
     int boardSize = boardModel->getBoardSize();
     buttons.resize(boardSize, QVector<QPushButton*>(boardSize));
@@ -59,8 +71,10 @@ void BoardView::handleButtonClick() {
     for (int row = 0; row < boardSize; row++) {
         for (int col = 0; col < boardSize; col++) {
             if (buttons[row][col] == clickedButton) {
-                boardModel->moveTile(boardModel->getBoard()[row][col]);
-                updateView();
+                if (boardModel->moveTile(boardModel->getBoard()[row][col])) {
+                    updateView();
+                    statsHandler->increaseMoveCount();
+                }
                 return;
             }
         }
@@ -70,22 +84,29 @@ void BoardView::handleButtonClick() {
 void BoardView::checkIfSolved() {
     // Handle solved puzzle
     if (boardModel->isSolved()) {
+        statsHandler->stopTimer();
         QMessageBox msgBox;
         msgBox.setWindowTitle("Puzzle Solved");
         msgBox.setText("Congratulations! You solved the puzzle!");
-        msgBox.setStandardButtons(QMessageBox::Close | QMessageBox::Retry);
-        msgBox.setDefaultButton(QMessageBox::Retry);
+        cout << statsHandler->getMoveCount() << " moves" << endl;
+        cout << statsHandler->getElapsedTime() << " s" << endl;
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        msgBox.setDefaultButton(QMessageBox::Ok);
 
         int result = msgBox.exec();
 
         switch(result) {
-            case QMessageBox::Retry:
-                boardModel->shuffle();
-                updateView();
-                break;
-            case QMessageBox::Close:
-                QApplication::quit();
+            case QMessageBox::Ok:
+                emit backToLandingPage();
                 break;
         }
     }
+}
+
+void BoardView::updateMovesDisplay(int moves) {
+    statsLabel->setText(QString("Moves: %1").arg(moves));
+}
+
+void BoardView::updateTimeDisplay(int timeElapsed) {
+    timerLabel->setText(QString("Time: %1 s").arg(timeElapsed));
 }
