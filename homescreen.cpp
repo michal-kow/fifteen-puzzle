@@ -4,7 +4,7 @@ HomeScreen::HomeScreen(PlayerManager* _playerManager, QWidget* parent)
     : QWidget(parent), playerManager(_playerManager) {
     QVBoxLayout* layout = new QVBoxLayout(this);
 
-    playerLabel = new QLabel(playerManager->getCurrentPlayerName(), this);
+    playerLabel = new QLabel("Current Player: " + playerManager->getCurrentPlayerName(), this);
     layout->addWidget(playerLabel);
 
     boardSizeDropdown = new QComboBox(this);

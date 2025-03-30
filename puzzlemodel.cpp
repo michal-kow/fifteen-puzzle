@@ -65,6 +65,10 @@ void PuzzleModel::shuffle() {
             break;
         }
     }
+
+    if (isSolved()) {
+        shuffle();
+    }
 }
 
 bool PuzzleModel::isEmptyTileAdjacent(int tile) {
