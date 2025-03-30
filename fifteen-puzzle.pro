@@ -9,18 +9,24 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    boardmodel.cpp \
-    boardview.cpp \
-    landingpage.cpp \
+    homescreen.cpp \
     main.cpp \
     mainwindow.cpp \
+    player.cpp \
+    playermanager.cpp \
+    puzzlemodel.cpp \
+    puzzlescreen.cpp \
+    screenmanager.cpp \
     statshandler.cpp
 
 HEADERS += \
-    boardmodel.h \
-    boardview.h \
-    landingpage.h \
+    homescreen.h \
     mainwindow.h \
+    player.h \
+    playermanager.h \
+    puzzlemodel.h \
+    puzzlescreen.h \
+    screenmanager.h \
     statshandler.h
 
 FORMS += \

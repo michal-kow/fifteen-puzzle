@@ -1,20 +1,20 @@
-#ifndef BOARDVIEW_H
-#define BOARDVIEW_H
+#ifndef PUZZLESCREEN_H
+#define PUZZLESCREEN_H
 #include <QWidget>
 #include <QGridLayout>
 #include <QVector>
 #include <QPushButton>
 #include <QLabel>
 
-#include <boardmodel.h>
+#include <puzzlemodel.h>
 #include <statshandler.h>
 
 
-class BoardView : public QWidget {
+class PuzzleScreen : public QWidget {
     Q_OBJECT
 
 private:
-    BoardModel *boardModel;
+    PuzzleModel *PuzzleModel;
     QGridLayout *gridLayout;
     StatsHandler *statsHandler;
     QLabel *statsLabel;
@@ -22,11 +22,12 @@ private:
     QVector<QVector<QPushButton*>> buttons;
 
 public:
-    explicit BoardView(BoardModel *model, QWidget *parent = nullptr);
+    explicit PuzzleScreen(class PuzzleModel *model, QWidget *parent = nullptr);
+    void displayPuzzle();
     void updateView();
 
 signals:
-    void backToLandingPage();
+    void goBackToHomeScreen();
 
 private slots:
     void handleButtonClick();
@@ -35,4 +36,4 @@ private slots:
     void updateTimeDisplay(int timeElapsed);
 };
 
-#endif // BOARDVIEW_H
+#endif // PUZZLESCREEN_H

@@ -4,9 +4,10 @@
 #include <QMainWindow>
 #include <QtWidgets/qpushbutton.h>
 #include <QStackedWidget>
-#include <landingpage.h>
-#include <boardmodel.h>
-#include <boardview.h>
+#include <homescreen.h>
+#include <puzzlemodel.h>
+#include <puzzlescreen.h>
+#include <screenmanager.h>
 
 using namespace std;
 
@@ -26,12 +27,11 @@ public:
 private:
     Ui::MainWindow *ui;
     QStackedWidget *stackedWidget;
-    LandingPage *landingPage;
-    BoardModel *boardModel;
-    BoardView *boardView;
+    ScreenManager *screenManager;
+    // PlayerManager *playerManager;
 
-public slots:
-    void startGame(int boardSize);
-    void returnToLandingPage();
+// public slots:
+//     void startGame(int boardSize);
+//     void returnToHomeScreen();
 };
 #endif // MAINWINDOW_H

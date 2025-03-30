@@ -1,9 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "boardmodel.h"
-#include "boardview.h"
-#include <iostream>
-using namespace std;
+// #include "playermanager.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -11,38 +8,36 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     stackedWidget = new QStackedWidget(this);
-
-    landingPage = new LandingPage();
-    connect(landingPage, &LandingPage::boardSizeSelected, this, &MainWindow::startGame);
-
-    stackedWidget->addWidget(landingPage);
+    // playerManager = new PlayerManager(this);
+    screenManager = new ScreenManager(stackedWidget, this);
 
     setCentralWidget(stackedWidget);
+
+    screenManager->showHomeScreen();
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
-    delete landingPage;
-    delete boardModel;
-    delete boardView;
     delete stackedWidget;
+    delete screenManager;
+    // delete playerManager;
 }
 
-void MainWindow::startGame(int boardSize) {
-    boardModel = new BoardModel(boardSize);
-    boardView = new BoardView(boardModel, this);
+// void MainWindow::startGame(int boardSize) {
+//     boardModel = new BoardModel(boardSize);
+//     boardView = new BoardView(boardModel, this);
 
-    connect(boardView, &BoardView::backToLandingPage, this, &MainWindow::returnToLandingPage);
+//     connect(boardView, &BoardView::backToHomeScreen, this, &MainWindow::returnToHomeScreen);
 
-    stackedWidget->addWidget(boardView);
-    stackedWidget->setCurrentWidget(boardView);
-}
+//     stackedWidget->addWidget(boardView);
+//     stackedWidget->setCurrentWidget(boardView);
+// }
 
-void MainWindow::returnToLandingPage() {
-    if (boardModel) {
-        delete boardModel;
-        delete boardView;
-    }
-    stackedWidget->setCurrentWidget(landingPage);
-}
+// void MainWindow::returnToHomeScreen() {
+//     if (boardModel && boardView) {
+//         delete boardModel;
+//         delete boardView;
+//     }
+//     stackedWidget->setCurrentWidget(homeScreen);
+// }
