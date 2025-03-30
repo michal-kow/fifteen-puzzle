@@ -1,4 +1,5 @@
 #include "playermanager.h"
+#include "player.h"
 
 #include <QFile>
 #include <QJsonDocument>
@@ -12,36 +13,67 @@ PlayerManager::PlayerManager(QObject *parent)
     : QObject{parent}
 {
     loadPlayersFromFile();
-    currentPlayer = &players[0];
+    if (players.length() > 0) {
+        currentPlayer = players[0];
+    } else {
+        addPlayer("Guest");
+        savePlayersToFile();
+    }
 }
 
-void PlayerManager::addPlayer(QString name) {
+bool PlayerManager::addPlayer(const QString& name) {
+    for (const auto& player : players) {
+        if (player->getName() == name) {
+            return false;
+        }
+    }
     players.append(QSharedPointer<Player>::create(name));
+    savePlayersToFile();
+    return true;
+}
+
+void PlayerManager::removePlayer(const QString& name) {
+    players.erase(
+        remove_if(
+            players.begin(),
+            players.end(),
+            [&name](const QSharedPointer<Player>& player) {
+                return player->getName() == name;
+            }
+        ),
+        players.end()
+    );
     savePlayersToFile();
 }
 
-void PlayerManager::switchPlayer(QString name) {
-    for (int i = 0; i < players.length(); i++) {
-        if (players[i]->getName() == name) {
-            currentPlayer = &players[i];
+QString PlayerManager::getCurrentPlayerName() {
+    return currentPlayer ? currentPlayer->getName() : "Guest";
+}
+
+void PlayerManager::setCurrentPlayer(QString name) {
+    for (QSharedPointer<Player> player : players) {
+        if (player->getName() == name) {
+            currentPlayer = player;
+            emit currentPlayerChanged(name);
+            return;
         }
     }
 }
 
-QSharedPointer<Player> PlayerManager::getCurrentPlayer() {
-    return *currentPlayer;
+QVector<QSharedPointer<Player>> PlayerManager::getPlayers() {
+    return players;
 }
 
-void PlayerManager::savePlayersToFile() {
+bool PlayerManager::savePlayersToFile() {
     QFile file("players.json");
 
     if (!file.open(QIODevice::WriteOnly)) {
         qWarning("Could not open player file for writing.");
-        return;
+        return false;
     }
 
     QJsonArray jsonArray;
-    for (const auto& player : players) {
+    for (QSharedPointer<Player> player : players) {
         QJsonObject jsonObj;
         jsonObj["name"] = player->getName();
         jsonObj["bestMoves"] = player->getBestMoves();
@@ -52,14 +84,16 @@ void PlayerManager::savePlayersToFile() {
     QJsonDocument doc(jsonArray);
     file.write(doc.toJson());
     file.close();
+
+    return true;
 }
 
-void PlayerManager::loadPlayersFromFile() {
+bool PlayerManager::loadPlayersFromFile() {
     QFile file("players.json");
 
     if (!file.open(QIODevice::ReadOnly)) {
         cout << "Couldn't open the file" << endl;
-        return;
+        return false;
     }
 
     QByteArray data = file.readAll();
@@ -68,7 +102,7 @@ void PlayerManager::loadPlayersFromFile() {
     QJsonDocument doc = QJsonDocument::fromJson(data);
     if (!doc.isArray()) {
         cout << "Incorrect file format" << endl;
-        return;
+        return false;
     }
 
     QJsonArray jsonArray = doc.array();
@@ -77,7 +111,9 @@ void PlayerManager::loadPlayersFromFile() {
     for (const QJsonValue& value : jsonArray) {
         if (value.isObject()) {
             QJsonObject jsonObj = value.toObject();
-            players.append(QSharedPointer<Player>::create("testName"));
+            players.append(QSharedPointer<Player>::create(jsonObj["name"].toString()));
         }
     }
+
+    return true;
 }

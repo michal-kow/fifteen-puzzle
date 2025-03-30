@@ -28,10 +28,6 @@ private:
     Ui::MainWindow *ui;
     QStackedWidget *stackedWidget;
     ScreenManager *screenManager;
-    // PlayerManager *playerManager;
-
-// public slots:
-//     void startGame(int boardSize);
-//     void returnToHomeScreen();
+    PlayerManager *playerManager;
 };
 #endif // MAINWINDOW_H

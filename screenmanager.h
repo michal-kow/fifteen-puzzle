@@ -4,6 +4,7 @@
 #include <QStackedWidget>
 #include "homescreen.h"
 #include "puzzlescreen.h"
+#include "playermanagerscreen.h"
 
 class ScreenManager : public QObject {
     Q_OBJECT
@@ -12,12 +13,11 @@ private:
     QStackedWidget* stackedWidget;
     PuzzleModel* puzzleModel;
     HomeScreen* homeScreen;
-    // PlayerManagementScreen* playerManagerScreen;
+    PlayerManagerScreen* playerManagerScreen;
     PuzzleScreen* puzzleScreen;
 
 public:
-    // explicit ScreenManager(QStackedWidget* stackedWidget, PlayerManager* playerManager, QObject* parent = nullptr);
-    explicit ScreenManager(QStackedWidget* stackedWidget, QObject* parent = nullptr);
+    explicit ScreenManager(QStackedWidget* stackedWidget, PlayerManager* playerManager, QObject* parent = nullptr);
 
     void showHomeScreen();
     void showPlayerManagementScreen();

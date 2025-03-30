@@ -5,13 +5,13 @@
 #include <QComboBox>
 #include <QPushButton>
 #include <QLabel>
-// #include <playermanager.h>
+#include <playermanager.h>
 
 class HomeScreen : public QWidget {
     Q_OBJECT
 
 private:
-    // PlayerManager* playerManager;
+    PlayerManager* playerManager;
     QVBoxLayout *layout;
     QLabel *playerLabel;
     QComboBox *boardSizeDropdown;
@@ -19,8 +19,8 @@ private:
     QPushButton *managePlayersButton;
 
 public:
-    // explicit HomeScreen(PlayerManager* playerManager, QWidget *parent = nullptr);
-    explicit HomeScreen(QWidget *parent = nullptr);
+    explicit HomeScreen(PlayerManager* playerManager, QWidget *parent = nullptr);
+    // explicit HomeScreen(QWidget *parent = nullptr);
 
 signals:
     void boardSizeSelected(int boardSize);
@@ -28,6 +28,7 @@ signals:
 
 private slots:
     void onStartClicked();
+    void updateCurrentPlayer(QString playerName);
 };
 
 #endif // HOMESCREEN_H

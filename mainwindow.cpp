@@ -8,8 +8,8 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     stackedWidget = new QStackedWidget(this);
-    // playerManager = new PlayerManager(this);
-    screenManager = new ScreenManager(stackedWidget, this);
+    playerManager = new PlayerManager(this);
+    screenManager = new ScreenManager(stackedWidget, playerManager, this);
 
     setCentralWidget(stackedWidget);
 

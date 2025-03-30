@@ -14,6 +14,7 @@ SOURCES += \
     mainwindow.cpp \
     player.cpp \
     playermanager.cpp \
+    playermanagerscreen.cpp \
     puzzlemodel.cpp \
     puzzlescreen.cpp \
     screenmanager.cpp \
@@ -24,6 +25,7 @@ HEADERS += \
     mainwindow.h \
     player.h \
     playermanager.h \
+    playermanagerscreen.h \
     puzzlemodel.h \
     puzzlescreen.h \
     screenmanager.h \
@@ -36,3 +38,5 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+DISTFILES +=

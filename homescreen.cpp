@@ -1,13 +1,10 @@
 #include "homescreen.h"
 
-// HomeScreen::HomeScreen(PlayerManager* _playerManager, QWidget* parent)
-//     : QWidget(parent), playerManager(_playerManager) {
-HomeScreen::HomeScreen(QWidget* parent)
-    : QWidget(parent) {
+HomeScreen::HomeScreen(PlayerManager* _playerManager, QWidget* parent)
+    : QWidget(parent), playerManager(_playerManager) {
     QVBoxLayout* layout = new QVBoxLayout(this);
 
-    // playerLabel = new QLabel(playerManager->getCurrentPlayer()->getName(), this);
-    playerLabel = new QLabel("PlayerName", this);
+    playerLabel = new QLabel(playerManager->getCurrentPlayerName(), this);
     layout->addWidget(playerLabel);
 
     boardSizeDropdown = new QComboBox(this);
@@ -28,9 +25,15 @@ HomeScreen::HomeScreen(QWidget* parent)
     layout->addWidget(managePlayersButton);
 
     setLayout(layout);
+
+    connect(playerManager, &PlayerManager::currentPlayerChanged, this, &HomeScreen::updateCurrentPlayer);
 }
 
 void HomeScreen::onStartClicked() {
     int boardSize = boardSizeDropdown->currentData().toInt();
     emit boardSizeSelected(boardSize);
+}
+
+void HomeScreen::updateCurrentPlayer(QString playerName) {
+    playerLabel->setText("Current Player: " + playerName);
 }
