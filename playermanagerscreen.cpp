@@ -74,8 +74,23 @@ void PlayerManagerScreen::deletePlayer() {
         QMessageBox::warning(this, "No Selection", "Please select a player to delete.");
         return;
     }
-
     QString playerName = selectedItem->text();
-    playerManager->removePlayer(playerName);
-    updatePlayerList();
+
+    QMessageBox msgBox;
+    msgBox.setWindowTitle("Are you sure?");
+    msgBox.setText("Are you sure? Deleting this player will also remove their stats!");
+    msgBox.setStandardButtons(QMessageBox::Cancel | QMessageBox::Ok);
+    msgBox.setDefaultButton(QMessageBox::Cancel);
+
+    int result = msgBox.exec();
+
+    switch(result) {
+        case QMessageBox::Ok:
+            playerManager->removePlayer(playerName);
+            updatePlayerList();
+            break;
+
+        case QMessageBox::Cancel:
+            break;
+    }
 }

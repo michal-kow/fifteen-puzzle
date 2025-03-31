@@ -4,35 +4,39 @@ Player::Player(QString _name, QObject *parent)
     : QObject{parent}
 {
     name = _name;
-    bestTime = -1;
-    bestMoves = -1;
+    bestTimes = QMap<int, int>();
+    bestMoves = QMap<int, int>();
 }
 
 QString Player::getName() {
     return name;
 }
 
-int Player::getBestTime() {
-    return bestTime;
+QMap<int, int> Player::getBestTimes() {
+    return bestTimes;
 }
 
-int Player::getBestMoves() {
+QMap<int, int> Player::getBestMoves() {
     return bestMoves;
 }
 
-void Player::updateBestMoves(int moves) {
-    if (bestMoves == -1) {
-        bestMoves = moves;
-    } else if (moves < bestMoves) {
-        bestMoves = moves;
+void Player::updateBestMoves(int moves, int boardSize) {
+    if (bestMoves.contains(boardSize)) {
+        if (moves < bestMoves[boardSize]) {
+            bestMoves[boardSize] = moves;
+        }
+    } else {
+        bestMoves.insert(boardSize, moves);
     }
 }
 
-void Player::updateBestTime(int time) {
-    if (bestTime == -1) {
-        bestTime = time;
-    } else if (time < bestTime) {
-        bestTime = time;
+void Player::updateBestTimes(int time, int boardSize) {
+    if (bestTimes.contains(boardSize)) {
+        if (time < bestTimes[boardSize]) {
+            bestTimes[boardSize] = time;
+        }
+    } else {
+        bestTimes.insert(boardSize, time);
     }
 }
 

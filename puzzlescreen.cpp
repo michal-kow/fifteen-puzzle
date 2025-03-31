@@ -94,6 +94,7 @@ void PuzzleScreen::checkIfSolved() {
     // Handle solved puzzle
     if (PuzzleModel->isSolved()) {
         statsHandler->stopTimer();
+        emit puzzleCompleted(statsHandler->getMoveCount(), statsHandler->getElapsedTime(), PuzzleModel->getBoardSize());
         QMessageBox msgBox;
         msgBox.setWindowTitle("Puzzle Solved");
         msgBox.setText("Congratulations! You solved the puzzle!");

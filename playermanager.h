@@ -25,6 +25,9 @@ public:
 
 signals:
     void currentPlayerChanged(QString newPlayerName);
+
+public slots:
+    void updatePlayerStats(int moves, int time, int boardSize);
 };
 
 #endif // PLAYERMANAGER_H

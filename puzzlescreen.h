@@ -28,6 +28,7 @@ public:
 
 signals:
     void goBackToHomeScreen();
+    void puzzleCompleted(int moves, int time, int boardSize);
 
 private slots:
     void handleButtonClick();

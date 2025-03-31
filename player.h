@@ -2,6 +2,7 @@
 #define PLAYER_H
 
 #include <QObject>
+#include <QMap>
 
 class Player : public QObject
 {
@@ -9,16 +10,16 @@ class Player : public QObject
 
 private:
     QString name;
-    int bestTime;
-    int bestMoves;
+    QMap<int, int> bestTimes;
+    QMap<int, int> bestMoves;
 
 public:
     explicit Player(QString _name, QObject *parent = nullptr);
     QString getName();
-    int getBestTime();
-    int getBestMoves();
-    void updateBestTime(int time);
-    void updateBestMoves(int moves);
+    QMap<int, int> getBestTimes();
+    QMap<int, int> getBestMoves();
+    void updateBestTimes(int time, int boardSize);
+    void updateBestMoves(int moves, int boardSize);
 
 signals:
 };

@@ -73,11 +73,26 @@ bool PlayerManager::savePlayersToFile() {
     }
 
     QJsonArray jsonArray;
+
+    cout << "Before for" << endl;
     for (QSharedPointer<Player> player : players) {
         QJsonObject jsonObj;
         jsonObj["name"] = player->getName();
-        jsonObj["bestMoves"] = player->getBestMoves();
-        jsonObj["bestTime"] = player->getBestTime();
+
+        QJsonObject bestTimesObj;
+        QMap<int, int> bestTimes = player->getBestTimes();
+        for (auto i = bestTimes.cbegin(), end = bestTimes.cend(); i!= end; ++i) {
+            bestTimesObj[QString::number(i.key())] = i.value();
+        }
+
+        QJsonObject bestMovesObj;
+        QMap<int, int> bestMoves = player->getBestMoves();
+        for (auto i = bestMoves.cbegin(), end = bestMoves.cend(); i != end; ++i) {
+            bestMovesObj[QString::number(i.key())] = i.value();
+        }
+
+        jsonObj["bestTimes"] = bestTimesObj;
+        jsonObj["bestMoves"] = bestMovesObj;
         jsonArray.append(jsonObj);
     }
 
@@ -111,9 +126,34 @@ bool PlayerManager::loadPlayersFromFile() {
     for (const QJsonValue& value : jsonArray) {
         if (value.isObject()) {
             QJsonObject jsonObj = value.toObject();
-            players.append(QSharedPointer<Player>::create(jsonObj["name"].toString()));
+            QSharedPointer<Player> player = QSharedPointer<Player>::create(jsonObj["name"].toString());
+
+            if (jsonObj.contains("bestTimes") && jsonObj["bestTimes"].isObject()) {
+                QJsonObject bestTimesObj = jsonObj["bestTimes"].toObject();
+                for (QString key : bestTimesObj.keys()) {
+                    player->updateBestTimes(key.toInt(), bestTimesObj[key].toInt());
+                }
+            }
+
+            if (jsonObj.contains("bestMoves") && jsonObj["bestMoves"].isObject()) {
+                QJsonObject bestMovesObj = jsonObj["bestMoves"].toObject();
+                for (QString key : bestMovesObj.keys()) {
+                    player->updateBestMoves(key.toInt(), bestMovesObj[key].toInt());
+                }
+            }
+
+            players.append(player);
         }
     }
 
     return true;
+}
+
+void PlayerManager::updatePlayerStats(int moves, int time, int boardSize) {
+    if (!currentPlayer) return;
+
+    currentPlayer->updateBestMoves(moves, boardSize);
+    currentPlayer->updateBestTimes(time, boardSize);
+
+    savePlayersToFile();
 }

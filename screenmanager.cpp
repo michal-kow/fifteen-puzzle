@@ -16,6 +16,7 @@ ScreenManager::ScreenManager(QStackedWidget* _stackedWidget, PlayerManager* play
     connect(playerManagerScreen, &PlayerManagerScreen::goBackToHomeScreen, this, &ScreenManager::showHomeScreen);
     connect(homeScreen, &HomeScreen::boardSizeSelected, this, &ScreenManager::showPuzzleScreen);
     connect(homeScreen, &HomeScreen::openPlayerManagement, this, &ScreenManager::showPlayerManagementScreen);
+    connect(puzzleScreen, &PuzzleScreen::puzzleCompleted, playerManager, &PlayerManager::updatePlayerStats);
 }
 
 void ScreenManager::showHomeScreen() {
