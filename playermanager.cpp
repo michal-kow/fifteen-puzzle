@@ -29,6 +29,7 @@ bool PlayerManager::addPlayer(const QString& name) {
     }
     players.append(QSharedPointer<Player>::create(name));
     savePlayersToFile();
+    emit addedPlayer();
     return true;
 }
 
@@ -74,7 +75,6 @@ bool PlayerManager::savePlayersToFile() {
 
     QJsonArray jsonArray;
 
-    cout << "Before for" << endl;
     for (QSharedPointer<Player> player : players) {
         QJsonObject jsonObj;
         jsonObj["name"] = player->getName();
@@ -131,14 +131,14 @@ bool PlayerManager::loadPlayersFromFile() {
             if (jsonObj.contains("bestTimes") && jsonObj["bestTimes"].isObject()) {
                 QJsonObject bestTimesObj = jsonObj["bestTimes"].toObject();
                 for (QString key : bestTimesObj.keys()) {
-                    player->updateBestTimes(key.toInt(), bestTimesObj[key].toInt());
+                    player->updateBestTimes(bestTimesObj[key].toInt(), key.toInt());
                 }
             }
 
             if (jsonObj.contains("bestMoves") && jsonObj["bestMoves"].isObject()) {
                 QJsonObject bestMovesObj = jsonObj["bestMoves"].toObject();
                 for (QString key : bestMovesObj.keys()) {
-                    player->updateBestMoves(key.toInt(), bestMovesObj[key].toInt());
+                    player->updateBestMoves(bestMovesObj[key].toInt(), key.toInt());
                 }
             }
 

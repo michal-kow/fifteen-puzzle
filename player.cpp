@@ -28,6 +28,8 @@ void Player::updateBestMoves(int moves, int boardSize) {
     } else {
         bestMoves.insert(boardSize, moves);
     }
+
+    emit updatedBestStats();
 }
 
 void Player::updateBestTimes(int time, int boardSize) {
@@ -38,5 +40,7 @@ void Player::updateBestTimes(int time, int boardSize) {
     } else {
         bestTimes.insert(boardSize, time);
     }
+
+    emit updatedBestStats();
 }
 

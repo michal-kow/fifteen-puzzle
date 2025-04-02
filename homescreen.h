@@ -17,14 +17,15 @@ private:
     QComboBox *boardSizeDropdown;
     QPushButton *startButton;
     QPushButton *managePlayersButton;
+    QPushButton *leaderboardButton;
 
 public:
     explicit HomeScreen(PlayerManager* playerManager, QWidget *parent = nullptr);
-    // explicit HomeScreen(QWidget *parent = nullptr);
 
 signals:
     void boardSizeSelected(int boardSize);
     void openPlayerManagement();
+    void openLeaderboard();
 
 private slots:
     void onStartClicked();

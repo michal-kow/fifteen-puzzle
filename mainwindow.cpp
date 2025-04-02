@@ -7,6 +7,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     stackedWidget = new QStackedWidget(this);
+    stackedWidget->setFixedSize(400, 400);
     playerManager = new PlayerManager(this);
     screenManager = new ScreenManager(stackedWidget, playerManager, this);
 

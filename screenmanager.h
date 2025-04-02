@@ -5,6 +5,7 @@
 #include "homescreen.h"
 #include "puzzlescreen.h"
 #include "playermanagerscreen.h"
+#include "leaderboardscreen.h"
 
 class ScreenManager : public QObject {
     Q_OBJECT
@@ -15,6 +16,7 @@ private:
     HomeScreen* homeScreen;
     PlayerManagerScreen* playerManagerScreen;
     PuzzleScreen* puzzleScreen;
+    LeaderboardScreen* leaderboardScreen;
 
 public:
     explicit ScreenManager(QStackedWidget* stackedWidget, PlayerManager* playerManager, QObject* parent = nullptr);
@@ -22,6 +24,7 @@ public:
     void showHomeScreen();
     void showPlayerManagementScreen();
     void showPuzzleScreen(int boardSize);
+    void showLeaderboardScreen();
 };
 
 #endif // SCREENMANAGER_H

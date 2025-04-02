@@ -8,12 +8,10 @@ HomeScreen::HomeScreen(PlayerManager* _playerManager, QWidget* parent)
     layout->addWidget(playerLabel);
 
     boardSizeDropdown = new QComboBox(this);
-    boardSizeDropdown->addItem("2x2", 2);
+    boardSizeDropdown->addItem("2x2", 2); //TODO: remove after development
     boardSizeDropdown->addItem("3x3", 3);
     boardSizeDropdown->addItem("4x4", 4);
     boardSizeDropdown->addItem("5x5", 5);
-    boardSizeDropdown->addItem("6x6", 6);
-    boardSizeDropdown->addItem("7x7", 7);
     layout->addWidget(boardSizeDropdown);
 
     startButton = new QPushButton("Start Game", this);
@@ -23,6 +21,10 @@ HomeScreen::HomeScreen(PlayerManager* _playerManager, QWidget* parent)
     managePlayersButton = new QPushButton("Manage Players", this);
     connect(managePlayersButton, &QPushButton::clicked, this, &HomeScreen::openPlayerManagement);
     layout->addWidget(managePlayersButton);
+
+    leaderboardButton = new QPushButton("Leaderboard", this);
+    connect(leaderboardButton, &QPushButton::clicked, this, &HomeScreen::openLeaderboard);
+    layout->addWidget(leaderboardButton);
 
     setLayout(layout);
 

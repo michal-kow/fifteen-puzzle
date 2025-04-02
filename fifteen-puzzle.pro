@@ -10,6 +10,7 @@ CONFIG += c++17
 
 SOURCES += \
     homescreen.cpp \
+    leaderboardscreen.cpp \
     main.cpp \
     mainwindow.cpp \
     player.cpp \
@@ -22,6 +23,7 @@ SOURCES += \
 
 HEADERS += \
     homescreen.h \
+    leaderboardscreen.h \
     mainwindow.h \
     player.h \
     playermanager.h \

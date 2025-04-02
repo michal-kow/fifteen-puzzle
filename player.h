@@ -22,6 +22,7 @@ public:
     void updateBestMoves(int moves, int boardSize);
 
 signals:
+    void updatedBestStats();
 };
 
 #endif // PLAYER_H

@@ -25,6 +25,7 @@ public:
 
 signals:
     void currentPlayerChanged(QString newPlayerName);
+    void addedPlayer();
 
 public slots:
     void updatePlayerStats(int moves, int time, int boardSize);
