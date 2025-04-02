@@ -41,12 +41,7 @@ LeaderboardScreen::LeaderboardScreen(PlayerManager* _playerManager, QWidget *par
 
 void LeaderboardScreen::connectPlayersForUpdates() {
     for (const auto& player : playerManager->getPlayers()) {
-        bool connected = connect(player.get(), &Player::updatedBestStats, this, &LeaderboardScreen::updateLeaderboard);
-        if (!connected) {
-            qDebug() << "Failed to connect statsUpdated signal for player:" << player->getName();
-        } else {
-            qDebug() << "Connected statsUpdated signal for player:" << player->getName();
-        }
+        connect(player.get(), &Player::updatedBestStats, this, &LeaderboardScreen::updateLeaderboard);
     }
 }
 
