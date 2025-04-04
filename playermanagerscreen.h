@@ -32,6 +32,7 @@ private slots:
     void addPlayer();
     void selectPlayer();
     void deletePlayer();
+    void onBackButtonClicked();
 };
 
 #endif // PLAYERMANAGERSCREEN_H

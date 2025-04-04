@@ -45,6 +45,7 @@ void PlayerManager::removePlayer(const QString& name) {
         players.end()
     );
     savePlayersToFile();
+    emit removedPlayer();
 }
 
 QString PlayerManager::getCurrentPlayerName() {

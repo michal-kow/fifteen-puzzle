@@ -37,6 +37,7 @@ LeaderboardScreen::LeaderboardScreen(PlayerManager* _playerManager, QWidget *par
 
     connectPlayersForUpdates();
     connect(playerManager, &PlayerManager::addedPlayer, this, &LeaderboardScreen::connectPlayersForUpdates);
+    connect(playerManager, &PlayerManager::removedPlayer, this, &LeaderboardScreen::updateLeaderboard);
 }
 
 void LeaderboardScreen::connectPlayersForUpdates() {
@@ -45,9 +46,9 @@ void LeaderboardScreen::connectPlayersForUpdates() {
     }
 }
 
-//TODO: call updateLeaderboard when a player is removed
 void LeaderboardScreen::updateLeaderboard() {
-    cout << "updating leaderboard..." << endl;
+    bestTimeTable->clearContents();
+    bestMovesTable->clearContents();
     auto players = playerManager->getPlayers();
 
     QMap<int, QPair<int, QString>> bestMoves;

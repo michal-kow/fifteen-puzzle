@@ -30,7 +30,7 @@ PlayerManagerScreen::PlayerManagerScreen(PlayerManager* playerManager, QWidget *
     connect(playerList, &QListWidget::itemDoubleClicked, this, &PlayerManagerScreen::selectPlayer);
     connect(setAsCurrentPlayerButton, &QPushButton::clicked, this, &PlayerManagerScreen::selectPlayer);
     connect(deletePlayerButton, &QPushButton::clicked, this, &PlayerManagerScreen::deletePlayer);
-    connect(backButton, &QPushButton::clicked, this, &PlayerManagerScreen::goBackToHomeScreen);
+    connect(backButton, &QPushButton::clicked, this, &PlayerManagerScreen::onBackButtonClicked);
 }
 
 void PlayerManagerScreen::updatePlayerList() {
@@ -93,4 +93,23 @@ void PlayerManagerScreen::deletePlayer() {
         case QMessageBox::Cancel:
             break;
     }
+}
+
+void PlayerManagerScreen::onBackButtonClicked() {
+    QString currentPlayerName = playerManager->getCurrentPlayerName();
+
+    bool playerStillExists = false;
+    for (const auto& player : playerManager->getPlayers()) {
+        if (player->getName() == currentPlayerName) {
+            playerStillExists = true;
+            break;
+        }
+    }
+
+    if (!playerStillExists) {
+        QMessageBox::warning(this, "Player Missing", "The selected player was deleted. Please choose another.");
+        return;
+    }
+
+    emit goBackToHomeScreen();
 }
