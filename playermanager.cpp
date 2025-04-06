@@ -1,5 +1,6 @@
 #include "playermanager.h"
-#include "player.h"
+#include "humanplayer.h"
+#include "aiplayer.h"
 
 #include <QFile>
 #include <QJsonDocument>
@@ -16,18 +17,22 @@ PlayerManager::PlayerManager(QObject *parent)
     if (players.length() > 0) {
         currentPlayer = players[0];
     } else {
-        addPlayer("Guest");
+        addPlayer("Guest", false);
         savePlayersToFile();
     }
 }
 
-bool PlayerManager::addPlayer(const QString& name) {
+bool PlayerManager::addPlayer(const QString& name, const bool isAI) {
     for (const auto& player : players) {
         if (player->getName() == name) {
             return false;
         }
     }
-    players.append(QSharedPointer<Player>::create(name));
+    if (isAI) {
+        players.append(QSharedPointer<AIPlayer>::create(name));
+    } else {
+        players.append(QSharedPointer<HumanPlayer>::create(name));
+    }
     savePlayersToFile();
     emit addedPlayer();
     return true;
@@ -52,11 +57,15 @@ QString PlayerManager::getCurrentPlayerName() {
     return currentPlayer ? currentPlayer->getName() : "Guest";
 }
 
+bool PlayerManager::getCurrentPlayerIsAI() {
+    return currentPlayer->isAI();
+}
+
 void PlayerManager::setCurrentPlayer(QString name) {
     for (QSharedPointer<Player> player : players) {
         if (player->getName() == name) {
             currentPlayer = player;
-            emit currentPlayerChanged(name);
+            emit currentPlayerChanged(name, getCurrentPlayerIsAI());
             return;
         }
     }
@@ -79,21 +88,25 @@ bool PlayerManager::savePlayersToFile() {
     for (QSharedPointer<Player> player : players) {
         QJsonObject jsonObj;
         jsonObj["name"] = player->getName();
+        jsonObj["isAI"] = player->isAI();
 
-        QJsonObject bestTimesObj;
-        QMap<int, int> bestTimes = player->getBestTimes();
-        for (auto i = bestTimes.cbegin(), end = bestTimes.cend(); i!= end; ++i) {
-            bestTimesObj[QString::number(i.key())] = i.value();
+        if (!player->isAI()) {
+            HumanPlayer* humanPlayer = dynamic_cast<HumanPlayer*>(player.get());
+            QJsonObject bestTimesObj;
+            QMap<int, int> bestTimes = humanPlayer->getBestTimes();
+            for (auto i = bestTimes.cbegin(), end = bestTimes.cend(); i!= end; ++i) {
+                bestTimesObj[QString::number(i.key())] = i.value();
+            }
+
+            QJsonObject bestMovesObj;
+            QMap<int, int> bestMoves = humanPlayer->getBestMoves();
+            for (auto i = bestMoves.cbegin(), end = bestMoves.cend(); i != end; ++i) {
+                bestMovesObj[QString::number(i.key())] = i.value();
+            }
+
+            jsonObj["bestTimes"] = bestTimesObj;
+            jsonObj["bestMoves"] = bestMovesObj;
         }
-
-        QJsonObject bestMovesObj;
-        QMap<int, int> bestMoves = player->getBestMoves();
-        for (auto i = bestMoves.cbegin(), end = bestMoves.cend(); i != end; ++i) {
-            bestMovesObj[QString::number(i.key())] = i.value();
-        }
-
-        jsonObj["bestTimes"] = bestTimesObj;
-        jsonObj["bestMoves"] = bestMovesObj;
         jsonArray.append(jsonObj);
     }
 
@@ -127,19 +140,24 @@ bool PlayerManager::loadPlayersFromFile() {
     for (const QJsonValue& value : jsonArray) {
         if (value.isObject()) {
             QJsonObject jsonObj = value.toObject();
-            QSharedPointer<Player> player = QSharedPointer<Player>::create(jsonObj["name"].toString());
+            QSharedPointer<Player> player;
+            if (jsonObj["isAI"] == true) {
+                player = QSharedPointer<AIPlayer>::create(jsonObj["name"].toString());
+            } else {
+                player = QSharedPointer<HumanPlayer>::create(jsonObj["name"].toString());
 
-            if (jsonObj.contains("bestTimes") && jsonObj["bestTimes"].isObject()) {
-                QJsonObject bestTimesObj = jsonObj["bestTimes"].toObject();
-                for (QString key : bestTimesObj.keys()) {
-                    player->updateBestTimes(bestTimesObj[key].toInt(), key.toInt());
+                if (jsonObj.contains("bestTimes") && jsonObj["bestTimes"].isObject()) {
+                    QJsonObject bestTimesObj = jsonObj["bestTimes"].toObject();
+                    for (QString key : bestTimesObj.keys()) {
+                        player->updateBestTimes(bestTimesObj[key].toInt(), key.toInt());
+                    }
                 }
-            }
 
-            if (jsonObj.contains("bestMoves") && jsonObj["bestMoves"].isObject()) {
-                QJsonObject bestMovesObj = jsonObj["bestMoves"].toObject();
-                for (QString key : bestMovesObj.keys()) {
-                    player->updateBestMoves(bestMovesObj[key].toInt(), key.toInt());
+                if (jsonObj.contains("bestMoves") && jsonObj["bestMoves"].isObject()) {
+                    QJsonObject bestMovesObj = jsonObj["bestMoves"].toObject();
+                    for (QString key : bestMovesObj.keys()) {
+                        player->updateBestMoves(bestMovesObj[key].toInt(), key.toInt());
+                    }
                 }
             }
 

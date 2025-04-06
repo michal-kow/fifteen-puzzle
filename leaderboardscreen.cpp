@@ -42,7 +42,12 @@ LeaderboardScreen::LeaderboardScreen(PlayerManager* _playerManager, QWidget *par
 
 void LeaderboardScreen::connectPlayersForUpdates() {
     for (const auto& player : playerManager->getPlayers()) {
-        connect(player.get(), &Player::updatedBestStats, this, &LeaderboardScreen::updateLeaderboard);
+        if (!player->isAI()) {
+            HumanPlayer* humanPlayer = dynamic_cast<HumanPlayer*>(player.get());
+            if (humanPlayer) {
+                connect(humanPlayer, &HumanPlayer::updatedBestStats, this, &LeaderboardScreen::updateLeaderboard);
+            }
+        }
     }
 }
 
@@ -71,23 +76,26 @@ void LeaderboardScreen::fillWithData(int i, QTableWidget* table, int boardSize, 
     auto players = playerManager->getPlayers();
 
     for (QSharedPointer<Player> player : players) {
-        QTableWidgetItem *bestCellValue = table->item(i, 1);
+        if (!player->isAI()) {
+            HumanPlayer* humanPlayer = dynamic_cast<HumanPlayer*>(player.get());
+            QTableWidgetItem *bestCellValue = table->item(i, 1);
 
-        QMap<int, int> playerBestValues = type == "time" ? player->getBestTimes() : player->getBestMoves();
+            QMap<int, int> playerBestValues = type == "time" ? humanPlayer->getBestTimes() : humanPlayer->getBestMoves();
 
-        int playerBestValueForBoardSize = playerBestValues.contains(boardSize) ? playerBestValues[boardSize] : -1;
+            int playerBestValueForBoardSize = playerBestValues.contains(boardSize) ? playerBestValues[boardSize] : -1;
 
-        if (!bestCellValue) {
-            if (playerBestValueForBoardSize < 0) {
-                fillCells(table, i, QString('-'), QString('-'));
-            } else {
-                fillCells(table, i, QString::number(playerBestValueForBoardSize), player->getName());
-            }
-        } else if (playerBestValueForBoardSize >= 0) {
-            if (bestCellValue->text() == '-') {
-                fillCells(table, i, QString::number(playerBestValueForBoardSize), player->getName());
-            } else if (bestCellValue ->text().toInt() > playerBestValueForBoardSize) {
-                fillCells(table, i, QString::number(playerBestValueForBoardSize), player->getName());
+            if (!bestCellValue) {
+                if (playerBestValueForBoardSize < 0) {
+                    fillCells(table, i, QString('-'), QString('-'));
+                } else {
+                    fillCells(table, i, QString::number(playerBestValueForBoardSize), player->getName());
+                }
+            } else if (playerBestValueForBoardSize >= 0) {
+                if (bestCellValue->text() == '-') {
+                    fillCells(table, i, QString::number(playerBestValueForBoardSize), player->getName());
+                } else if (bestCellValue ->text().toInt() > playerBestValueForBoardSize) {
+                    fillCells(table, i, QString::number(playerBestValueForBoardSize), player->getName());
+                }
             }
         }
     }

@@ -14,6 +14,9 @@ PlayerManagerScreen::PlayerManagerScreen(PlayerManager* playerManager, QWidget *
     newPlayerInput->setPlaceholderText("Enter new player name");
     layout->addWidget(newPlayerInput);
 
+    aiCheckbox = new QCheckBox("AI Player", this);
+    layout->addWidget(aiCheckbox);
+
     addPlayerButton = new QPushButton("Add Player", this);
     setAsCurrentPlayerButton = new QPushButton("Pick Player", this);
     deletePlayerButton = new QPushButton("Delete Player", this);
@@ -47,7 +50,9 @@ void PlayerManagerScreen::addPlayer() {
         return;
     }
 
-    if (!playerManager->addPlayer(playerName)) {
+    bool isAI = aiCheckbox->isChecked();
+
+    if (!playerManager->addPlayer(playerName, isAI)) {
         QMessageBox::warning(this, "Error", "Player already exists.");
         return;
     }

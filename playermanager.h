@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <QSharedPointer>
-#include <player.h>
+#include <humanplayer.h>
 
 class PlayerManager : public QObject
 {
@@ -15,16 +15,17 @@ private:
 
 public:
     explicit PlayerManager(QObject *parent = nullptr);
-    bool addPlayer(const QString& name);
+    bool addPlayer(const QString& name, const bool isAI);
     void removePlayer(const QString& name);
     QString getCurrentPlayerName();
+    bool getCurrentPlayerIsAI();
     void setCurrentPlayer(QString name);
     QVector<QSharedPointer<Player>> getPlayers();
     bool savePlayersToFile();
     bool loadPlayersFromFile();
 
 signals:
-    void currentPlayerChanged(QString newPlayerName);
+    void currentPlayerChanged(QString newPlayerName, bool isAI);
     void addedPlayer();
     void removedPlayer();
 

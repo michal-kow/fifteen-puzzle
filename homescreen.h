@@ -15,6 +15,7 @@ private:
     QVBoxLayout *layout;
     QLabel *playerLabel;
     QComboBox *boardSizeDropdown;
+    QComboBox *algorithmDropdown;
     QPushButton *startButton;
     QPushButton *managePlayersButton;
     QPushButton *leaderboardButton;
@@ -29,7 +30,7 @@ signals:
 
 private slots:
     void onStartClicked();
-    void updateCurrentPlayer(QString playerName);
+    void updateCurrentPlayer(QString playerName, bool isAI);
 };
 
 #endif // HOMESCREEN_H

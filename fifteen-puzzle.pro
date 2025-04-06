@@ -9,7 +9,9 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    aiplayer.cpp \
     homescreen.cpp \
+    humanplayer.cpp \
     leaderboardscreen.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -22,7 +24,9 @@ SOURCES += \
     statshandler.cpp
 
 HEADERS += \
+    aiplayer.h \
     homescreen.h \
+    humanplayer.h \
     leaderboardscreen.h \
     mainwindow.h \
     player.h \

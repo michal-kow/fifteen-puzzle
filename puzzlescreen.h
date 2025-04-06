@@ -8,6 +8,7 @@
 
 #include <puzzlemodel.h>
 #include <statshandler.h>
+#include <playermanager.h>
 
 
 class PuzzleScreen : public QWidget {
@@ -15,14 +16,18 @@ class PuzzleScreen : public QWidget {
 
 private:
     PuzzleModel *PuzzleModel;
-    QGridLayout *gridLayout;
+    PlayerManager *playerManager;
+    QVBoxLayout* mainLayout;
+    QGridLayout *boardLayout;
+    QHBoxLayout* statsLayout;
     StatsHandler *statsHandler;
-    QLabel *statsLabel;
+    QLabel *movesLabel;
     QLabel *timerLabel;
     QVector<QVector<QPushButton*>> buttons;
+    QTimer* aiMoveTimer;
 
 public:
-    explicit PuzzleScreen(class PuzzleModel *model, QWidget *parent = nullptr);
+    explicit PuzzleScreen(class PuzzleModel *model, PlayerManager* playerManager, QWidget *parent = nullptr);
     void displayPuzzle();
     void updateView();
 
@@ -35,6 +40,7 @@ private slots:
     void checkIfSolved();
     void updateMovesDisplay(int moves);
     void updateTimeDisplay(int timeElapsed);
+    void makeAIMove();
 };
 
 #endif // PUZZLESCREEN_H

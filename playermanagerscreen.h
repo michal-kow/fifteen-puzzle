@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QListWidget>
 #include <QPushButton>
+#include <QCheckBox>
 
 #include <playermanager.h>
 
@@ -16,6 +17,7 @@ private:
     QListWidget* playerList;
     QLineEdit* newPlayerInput;
     QPushButton* addPlayerButton;
+    QCheckBox* aiCheckbox;
     QPushButton* setAsCurrentPlayerButton;
     QPushButton* deletePlayerButton;
     QPushButton* backButton;

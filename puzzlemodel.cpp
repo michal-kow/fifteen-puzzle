@@ -7,7 +7,7 @@ using namespace std;
 
 PuzzleModel::PuzzleModel() {
     // Create the default 15 Puzzle board (board size is 4) and shuffle it
-    createNewPuzzle(2);
+    createNewPuzzle(4);
 }
 
 PuzzleModel::PuzzleModel(int _boardSize) {

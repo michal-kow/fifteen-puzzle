@@ -6,7 +6,7 @@ ScreenManager::ScreenManager(QStackedWidget* _stackedWidget, PlayerManager* play
     homeScreen = new HomeScreen(playerManager);
     playerManagerScreen = new PlayerManagerScreen(playerManager);
     puzzleModel = new PuzzleModel();
-    puzzleScreen = new PuzzleScreen(puzzleModel);
+    puzzleScreen = new PuzzleScreen(puzzleModel, playerManager);
     leaderboardScreen = new LeaderboardScreen(playerManager);
 
     stackedWidget->addWidget(homeScreen);

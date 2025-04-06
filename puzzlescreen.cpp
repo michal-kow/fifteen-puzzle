@@ -4,19 +4,33 @@
 #include <QMessageBox>
 #include <QApplication>
 #include <iostream>
+#include <QRandomGenerator>
 
 using namespace std;
 
-PuzzleScreen::PuzzleScreen(class PuzzleModel *model, QWidget *parent) : QWidget(parent), PuzzleModel(model) {
-    // Create the grid layout, place buttons (tikes) inside, assign them according values and tie them to the click handler
-    gridLayout = new QGridLayout(this);
-    gridLayout->setSpacing(0);
-    setLayout(gridLayout);
+PuzzleScreen::PuzzleScreen(class PuzzleModel *model, PlayerManager* playerManager, QWidget *parent)
+    : QWidget(parent), PuzzleModel(model), playerManager(playerManager) {
+    // Create the grid layout, place buttons (tiles) inside, assign them according values and tie them to the click handler
+    mainLayout = new QVBoxLayout(this);
+
+    boardLayout = new QGridLayout();
+    boardLayout->setSpacing(0);
+    boardLayout->setContentsMargins(0, 0, 0, 0);
+    mainLayout->addLayout(boardLayout);
+
+    statsLayout = new QHBoxLayout();
+    movesLabel = new QLabel("Moves: 0");
+    timerLabel = new QLabel("Time: 0 s");
+    statsLayout->addWidget(movesLabel);
+    statsLayout->addWidget(timerLabel);
+    mainLayout->addLayout(statsLayout);
+
+    setLayout(mainLayout);
 }
 
 void PuzzleScreen::displayPuzzle() {
     QLayoutItem *child;
-    while ((child = gridLayout->takeAt(0)) != nullptr) {
+    while ((child = boardLayout->takeAt(0)) != nullptr) {
         delete child->widget();
         delete child;
     }
@@ -26,21 +40,16 @@ void PuzzleScreen::displayPuzzle() {
     connect(statsHandler, &StatsHandler::timeUpdated, this, &PuzzleScreen::updateTimeDisplay);
     statsHandler->startTimer();
 
-    statsLabel = new QLabel("Moves: 0");
-    timerLabel = new QLabel("Time: 0 s");
-
-    gridLayout->addWidget(statsLabel, PuzzleModel->getBoardSize(), 0, 1, PuzzleModel->getBoardSize());
-    gridLayout->addWidget(timerLabel, PuzzleModel->getBoardSize() + 1, 0, 1, PuzzleModel->getBoardSize());
-
     int boardSize = PuzzleModel->getBoardSize();
     buttons.clear();
     buttons.resize(boardSize, QVector<QPushButton*>(boardSize));
+    int tileSize = min(300/boardSize, 100);
 
     for (int row = 0; row < boardSize; row++) {
         for (int col = 0; col < boardSize; col++) {
             QPushButton *button = new QPushButton();
-            button->setFixedSize(80, 80);
-            gridLayout->addWidget(button, row, col);
+            button->setFixedSize(tileSize, tileSize);
+            boardLayout->addWidget(button, row, col);
             buttons[row][col] = button;
 
             connect(button, &QPushButton::clicked, this, &PuzzleScreen::handleButtonClick);
@@ -48,6 +57,13 @@ void PuzzleScreen::displayPuzzle() {
     }
 
     updateView();
+
+    aiMoveTimer = new QTimer(this);
+    connect(aiMoveTimer, &QTimer::timeout, this, &PuzzleScreen::makeAIMove);
+
+    if (playerManager->getCurrentPlayerIsAI()) {
+        aiMoveTimer->start(500);
+    }
 }
 
 void PuzzleScreen::updateView() {
@@ -112,9 +128,33 @@ void PuzzleScreen::checkIfSolved() {
 }
 
 void PuzzleScreen::updateMovesDisplay(int moves) {
-    statsLabel->setText(QString("Moves: %1").arg(moves));
+    movesLabel->setText(QString("Moves: %1").arg(moves));
 }
 
 void PuzzleScreen::updateTimeDisplay(int timeElapsed) {
     timerLabel->setText(QString("Time: %1 s").arg(timeElapsed));
+}
+
+void PuzzleScreen::makeAIMove() {
+    if (PuzzleModel->isSolved()) {
+        aiMoveTimer->stop();
+        return;
+    }
+
+    auto [x, y] = PuzzleModel->getTilePosition(0);
+
+    int boardSize = PuzzleModel->getBoardSize();
+    QVector<QVector<int>> board = PuzzleModel->getBoard();
+
+    QVector<int> candidates;
+    if (x > 0) candidates.append(board[x-1][y]);
+    if (y > 0) candidates.append(board[x][y-1]);
+    if (x < boardSize-1) candidates.append(board[x+1][y]);
+    if (y < boardSize-1) candidates.append(board[x][y+1]);
+
+    if (PuzzleModel->moveTile(candidates[QRandomGenerator::global()->bounded(candidates.size())])) {
+        statsHandler->increaseMoveCount();
+    }
+
+    updateView();
 }

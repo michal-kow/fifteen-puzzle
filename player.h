@@ -2,27 +2,22 @@
 #define PLAYER_H
 
 #include <QObject>
-#include <QMap>
+#include <QString>
 
 class Player : public QObject
 {
     Q_OBJECT
 
-private:
+protected:
     QString name;
-    QMap<int, int> bestTimes;
-    QMap<int, int> bestMoves;
 
 public:
-    explicit Player(QString _name, QObject *parent = nullptr);
-    QString getName();
-    QMap<int, int> getBestTimes();
-    QMap<int, int> getBestMoves();
-    void updateBestTimes(int time, int boardSize);
-    void updateBestMoves(int moves, int boardSize);
+    explicit Player(const QString& name, QObject *parent = nullptr);
 
-signals:
-    void updatedBestStats();
+    QString getName() const;
+    virtual void updateBestTimes(int time, int boardSize) = 0;
+    virtual void updateBestMoves(int moves, int boardSize) = 0;
+    virtual bool isAI() const = 0;
 };
 
 #endif // PLAYER_H
