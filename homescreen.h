@@ -24,7 +24,7 @@ public:
     explicit HomeScreen(PlayerManager* playerManager, QWidget *parent = nullptr);
 
 signals:
-    void boardSizeSelected(int boardSize);
+    void startGame(int boardSize, QString algorithm);
     void openPlayerManagement();
     void openLeaderboard();
 

@@ -19,6 +19,8 @@ HomeScreen::HomeScreen(PlayerManager* _playerManager, QWidget* parent)
 
     algorithmDropdown = new QComboBox(this);
     algorithmDropdown->addItem("Random");
+    algorithmDropdown->addItem("Greedy");
+    algorithmDropdown->addItem("A*");
     algorithmDropdown->setEnabled(false);
     layout->addWidget(algorithmDropdown);
 
@@ -41,7 +43,8 @@ HomeScreen::HomeScreen(PlayerManager* _playerManager, QWidget* parent)
 
 void HomeScreen::onStartClicked() {
     int boardSize = boardSizeDropdown->currentData().toInt();
-    emit boardSizeSelected(boardSize);
+    QString algorithm = algorithmDropdown->currentText();
+    emit startGame(boardSize, algorithm);
 }
 
 void HomeScreen::updateCurrentPlayer(QString playerName, bool isAI) {

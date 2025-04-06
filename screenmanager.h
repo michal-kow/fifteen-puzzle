@@ -23,7 +23,7 @@ public:
 
     void showHomeScreen();
     void showPlayerManagementScreen();
-    void showPuzzleScreen(int boardSize);
+    void showPuzzleScreen(int boardSize, QString algorithm);
     void showLeaderboardScreen();
 };
 

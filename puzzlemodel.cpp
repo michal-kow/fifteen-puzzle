@@ -7,11 +7,13 @@ using namespace std;
 
 PuzzleModel::PuzzleModel() {
     // Create the default 15 Puzzle board (board size is 4) and shuffle it
+    aiAlgorithm = "None";
     createNewPuzzle(4);
 }
 
 PuzzleModel::PuzzleModel(int _boardSize) {
     // Set properties based on the board size and shuffle the board
+    aiAlgorithm = "None";
     createNewPuzzle(_boardSize);
 }
 

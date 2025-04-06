@@ -9,7 +9,7 @@
 #include <puzzlemodel.h>
 #include <statshandler.h>
 #include <playermanager.h>
-
+#include <aialgorithm.h>
 
 class PuzzleScreen : public QWidget {
     Q_OBJECT
@@ -25,15 +25,17 @@ private:
     QLabel *timerLabel;
     QVector<QVector<QPushButton*>> buttons;
     QTimer* aiMoveTimer;
+    AIAlgorithm* aiAlgorithm = nullptr;
 
 public:
     explicit PuzzleScreen(class PuzzleModel *model, PlayerManager* playerManager, QWidget *parent = nullptr);
-    void displayPuzzle();
+    void displayPuzzle(QString algorithm);
     void updateView();
 
 signals:
     void goBackToHomeScreen();
     void puzzleCompleted(int moves, int time, int boardSize);
+    void callAIMove();
 
 private slots:
     void handleButtonClick();

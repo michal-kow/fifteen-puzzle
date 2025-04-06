@@ -16,7 +16,7 @@ ScreenManager::ScreenManager(QStackedWidget* _stackedWidget, PlayerManager* play
 
     connect(puzzleScreen, &PuzzleScreen::goBackToHomeScreen, this, &ScreenManager::showHomeScreen);
     connect(playerManagerScreen, &PlayerManagerScreen::goBackToHomeScreen, this, &ScreenManager::showHomeScreen);
-    connect(homeScreen, &HomeScreen::boardSizeSelected, this, &ScreenManager::showPuzzleScreen);
+    connect(homeScreen, &HomeScreen::startGame, this, &ScreenManager::showPuzzleScreen);
     connect(homeScreen, &HomeScreen::openPlayerManagement, this, &ScreenManager::showPlayerManagementScreen);
     connect(puzzleScreen, &PuzzleScreen::puzzleCompleted, playerManager, &PlayerManager::updatePlayerStats);
     connect(homeScreen, &HomeScreen::openLeaderboard, this, &ScreenManager::showLeaderboardScreen);
@@ -31,9 +31,9 @@ void ScreenManager::showPlayerManagementScreen() {
     stackedWidget->setCurrentWidget(playerManagerScreen);
 }
 
-void ScreenManager::showPuzzleScreen(int boardSize) {
+void ScreenManager::showPuzzleScreen(int boardSize, QString algorithm) {
     puzzleModel->createNewPuzzle(boardSize);
-    puzzleScreen->displayPuzzle();
+    puzzleScreen->displayPuzzle(algorithm);
     stackedWidget->setCurrentWidget(puzzleScreen);
 }
 

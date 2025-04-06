@@ -9,7 +9,10 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    aialgorithm.cpp \
     aiplayer.cpp \
+    astaraialgorithm.cpp \
+    greedyaialgorithm.cpp \
     homescreen.cpp \
     humanplayer.cpp \
     leaderboardscreen.cpp \
@@ -20,11 +23,15 @@ SOURCES += \
     playermanagerscreen.cpp \
     puzzlemodel.cpp \
     puzzlescreen.cpp \
+    randomaialgorithm.cpp \
     screenmanager.cpp \
     statshandler.cpp
 
 HEADERS += \
+    aialgorithm.h \
     aiplayer.h \
+    astaraialgorithm.h \
+    greedyaialgorithm.h \
     homescreen.h \
     humanplayer.h \
     leaderboardscreen.h \
@@ -34,6 +41,7 @@ HEADERS += \
     playermanagerscreen.h \
     puzzlemodel.h \
     puzzlescreen.h \
+    randomaialgorithm.h \
     screenmanager.h \
     statshandler.h
 

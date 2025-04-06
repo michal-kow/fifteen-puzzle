@@ -1,9 +1,11 @@
 #include "puzzlescreen.h"
 #include "puzzlemodel.h"
+#include "randomaialgorithm.h"
+#include "greedyaialgorithm.h"
+#include "astaraialgorithm.h"
 
 #include <QMessageBox>
 #include <QApplication>
-#include <iostream>
 #include <QRandomGenerator>
 
 using namespace std;
@@ -28,7 +30,7 @@ PuzzleScreen::PuzzleScreen(class PuzzleModel *model, PlayerManager* playerManage
     setLayout(mainLayout);
 }
 
-void PuzzleScreen::displayPuzzle() {
+void PuzzleScreen::displayPuzzle(QString algorithm) {
     QLayoutItem *child;
     while ((child = boardLayout->takeAt(0)) != nullptr) {
         delete child->widget();
@@ -58,11 +60,18 @@ void PuzzleScreen::displayPuzzle() {
 
     updateView();
 
-    aiMoveTimer = new QTimer(this);
-    connect(aiMoveTimer, &QTimer::timeout, this, &PuzzleScreen::makeAIMove);
-
     if (playerManager->getCurrentPlayerIsAI()) {
-        aiMoveTimer->start(500);
+        if (algorithm == "Random") {
+            aiAlgorithm = new RandomAIAlgorithm();
+        } else if (algorithm == "Greedy") {
+            aiAlgorithm = new GreedyAIAlgorithm();
+        } else if (algorithm == "A*") {
+            aiAlgorithm = new AStarAIAlgorithm();
+        }
+
+        QTimer::singleShot(100, this, [this]() {
+            makeAIMove();
+        });
     }
 }
 
@@ -137,23 +146,17 @@ void PuzzleScreen::updateTimeDisplay(int timeElapsed) {
 
 void PuzzleScreen::makeAIMove() {
     if (PuzzleModel->isSolved()) {
-        aiMoveTimer->stop();
         return;
     }
 
-    auto [x, y] = PuzzleModel->getTilePosition(0);
 
-    int boardSize = PuzzleModel->getBoardSize();
-    QVector<QVector<int>> board = PuzzleModel->getBoard();
-
-    QVector<int> candidates;
-    if (x > 0) candidates.append(board[x-1][y]);
-    if (y > 0) candidates.append(board[x][y-1]);
-    if (x < boardSize-1) candidates.append(board[x+1][y]);
-    if (y < boardSize-1) candidates.append(board[x][y+1]);
-
-    if (PuzzleModel->moveTile(candidates[QRandomGenerator::global()->bounded(candidates.size())])) {
-        statsHandler->increaseMoveCount();
+    if (aiAlgorithm) {
+        int move = aiAlgorithm->chooseMove(*PuzzleModel);
+        if (move != -1) {
+            PuzzleModel->moveTile(move);
+            statsHandler->increaseMoveCount();
+            QTimer::singleShot(0, this, &PuzzleScreen::makeAIMove);
+        }
     }
 
     updateView();

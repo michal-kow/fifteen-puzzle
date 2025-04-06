@@ -9,6 +9,7 @@ private:
     int boardSize; //size of the NxN board
     QVector<QVector<int>> board; //all tiles values stored in a 2D array
     QPoint emptyTile; //empty tile's position stored in the {x,y} format
+    QString aiAlgorithm;
 
 public:
     PuzzleModel();
